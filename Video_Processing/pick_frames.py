@@ -3,6 +3,7 @@ from numpy import rot90
 import os
 import cv2
 import sys
+import shutil
 
 if __name__ == "__main__":
     print('------------------------------------------')
@@ -13,6 +14,7 @@ if __name__ == "__main__":
     except:
         print('Error: Expected video name')
     video_file = os.path.join('video_clips', video_file_name)
+    shutil.copy(video_file, 'last_executed.mp4')
     print(video_file)
 
     video = cv2.VideoCapture(video_file)

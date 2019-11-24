@@ -1,3 +1,4 @@
+from audio_video_helper import run_audio_video_helper
 from pandas import read_csv, DataFrame
 from pprint import pprint
 import os
@@ -34,6 +35,7 @@ if __name__ == '__main__':
     max_value = 'max_value'
     frames_with_max_value = 'frames_with_max_value'
     frames_to_cover = number_of_frames // 4
+    frames_count_value = 40
 
     for col in classification_file.columns:
         col_value_indexes = []
@@ -58,4 +60,17 @@ if __name__ == '__main__':
         if row[max_value_field] > 0.75:
             attributes[max_value_field][max_in_row_count] += 1
 
-    pprint(attributes)
+    frame_number = frames_count_value
+    metrics_output_dir = 'metrics'
+    if not os.path.exists(metrics_output_dir):
+        os.makedirs(metrics_output_dir)
+
+    file_name_without_ext = os.path.splitext(classification_file_name)[0]
+    metrics_file_name = f'{file_name_without_ext}.csv'
+    metrics_file_path = os.path.join(metrics_output_dir, metrics_file_name)
+
+    attrs_df = DataFrame(attributes)
+    attrs_df.to_csv(metrics_file_path)
+    max_value_row = attrs_df.iloc[1,:].astype(int)
+    predicted_shot = max_value_row.idxmax()
+    run_audio_video_helper(predicted_shot, frame_number)
